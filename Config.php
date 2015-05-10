@@ -1,8 +1,7 @@
 <?php
 
 class Config {
-
-    private $error = '1';
+ 
     private $connect;
     private $settings = array(
         'host' => 'localhost',
@@ -20,11 +19,6 @@ class Config {
     public function __destruct() {
         $this->disconnect();
     }
-
-//    public function connect() {
-//        ini_set('display_errors', $this->error);
-//        error_reporting(E_ALL & ~E_NOTICE);
-//    }
 
     /**
      * Return array from result of database
