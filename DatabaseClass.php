@@ -18,7 +18,8 @@ class DatabaseClass {
         'user' => 'root',
         'password' => '',
         'database' => 'jack',
-        'charset' => 'utf8'
+        'charset' => 'utf8',
+        'error' => '1'
     );
 
     public function __construct() {
@@ -28,6 +29,11 @@ class DatabaseClass {
 
     public function __destruct() {
         $this->disconnect();
+    }
+
+    public function displayError() {
+        ini_set('display_errors', $this->settings['error']);
+        error_reporting(E_ALL & ~E_NOTICE);
     }
 
     /**
@@ -40,7 +46,7 @@ class DatabaseClass {
      */
     public function get_result($query, $Array = array()) {
         $dbinfo = $this->connect->query($query);
-       
+
         while ($row = mysqli_fetch_array($dbinfo)) {
             $Array[] = $row;
         }
@@ -146,8 +152,8 @@ class DatabaseClass {
             return true;
         }
     }
-    
-      /**
+
+    /**
      * Insert data from table
      *
      * @access public
@@ -155,7 +161,6 @@ class DatabaseClass {
      * @return bool
      *
      */
-
     public function insert($table, $var = array()) {
         $query = "INSERT INTO " . $table;
         $value = array();
