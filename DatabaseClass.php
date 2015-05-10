@@ -1,5 +1,15 @@
 <?php
 
+/* ------------------------------------------------------------------------------
+ * * File:	DatabaseClass.php
+ * * Class:       mysqli class
+ * * Description:	PHP MySQLi query operator
+ * * Version:		1.0
+ * * Updated:     18-Feb-2013
+ * * Author:	Jack petersen
+ * * Homepage:	jack-petersen.com
+ * *------------------------------------------------------------------------------ */
+
 class DatabaseClass {
 
     private $connect;
@@ -108,12 +118,67 @@ class DatabaseClass {
         return $data;
     }
 
-    public function delete() {
-        
-    }
+    /**
+     * Delete data from table
+     *
+     * @access public
+     * @param string table name
+     * @return bool
+     *
+     */
+    public function delete($table, $where = array(), $limit = '') {
+        $query = "DELETE FROM" . $table;
 
-    public function insert() {
-        
+        foreach ($where as $row => $value) {
+            $wheres[] = "$row = '$value'";
+        }
+        $query .= " WHERE " . implode(' AND ', $wheres);
+
+        if (!empty($limit)) {
+            $query .= " LIMIT " . $limit;
+        }
+
+        $this->connect->query($query);
+
+        if (mysqli_error($this->connect)) {
+            printf(mysqli_error($this->connect));
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+      /**
+     * Insert data from table
+     *
+     * @access public
+     * @param string table name
+     * @return bool
+     *
+     */
+
+    public function insert($table, $var = array()) {
+        $query = "INSERT INTO " . $table;
+        $value = array();
+        $item = array();
+        foreach ($var as $row => $values) {
+            $item[] = $this->filter($row);
+            $value[] = "'$values'";
+        }
+
+        $item = ' (' . implode(', ', $item) . ')';
+        $value = '(' . implode(', ', $value) . ')';
+
+        $query .= $item . ' VALUES ' . $value;
+
+        $query = mysqli_query($this->connect, $query);
+
+        if (mysqli_error($this->connect)) {
+            printf(mysqli_error($this->connect));
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -126,16 +191,15 @@ class DatabaseClass {
      * @return where
      *
      */
-    
     public function update($table, $var = array(), $where = array(), $limit = '') {
         $query = "UPDATE " . $table . " SET ";
+
         foreach ($var as $row => $value) {
             $update[] = "$row = '$value'";
         }
         $query .= implode(', ', $update);
 
         foreach ($where as $row => $value) {
-
             $wheres[] = "$row = '$value'";
         }
 
@@ -144,6 +208,7 @@ class DatabaseClass {
         if (!empty($limit)) {
             $query .= ' LIMIT ' . $limit;
         }
+
         $this->connect->query($query);
 
         if (mysqli_error($this->connect)) {
@@ -152,6 +217,25 @@ class DatabaseClass {
         } else {
             return true;
         }
+    }
+
+    /**
+     * check if database table exist
+     *
+     * @access public
+     * @param string
+     * @return bool
+     *
+     */
+    public function table_exist($table) {
+        $checkTable = $this->connect->query("SELECT * FROM $table LIMIT 1");
+
+        if ($checkTable) {
+            return true;
+        } else {
+            return false;
+        }
+        mysqli_free_result($checkTable);
     }
 
     /**
