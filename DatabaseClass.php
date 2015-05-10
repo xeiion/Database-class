@@ -16,8 +16,8 @@ class DatabaseClass {
     private $settings = array(
         'host' => 'localhost',
         'user' => 'root',
-        'password' => '',
-        'database' => 'jack',
+        'password' => 'password',
+        'database' => 'database',
         'charset' => 'utf8',
         'error' => '1'
     );
