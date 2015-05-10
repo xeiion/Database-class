@@ -1,7 +1,7 @@
 <?php
 
 class DatabaseClass {
- 
+
     private $connect;
     private $settings = array(
         'host' => 'localhost',
@@ -28,7 +28,6 @@ class DatabaseClass {
      * @return array
      *
      */
-    
     public function get_result($query) {
         $dbinfo = $this->connect->query($query);
         $Array = array();
@@ -39,10 +38,6 @@ class DatabaseClass {
         return $Array;
     }
 
-    public function get_row() {
-        
-    }
-    
     /**
      * Return last id from query
      *
@@ -51,13 +46,8 @@ class DatabaseClass {
      * @return int
      *
      */
-    
     public function lastInsertID() {
-          return mysqli_insert_id($this->connect);
-    }
-
-    public function firstID() {
-        
+        return mysqli_insert_id($this->connect);
     }
 
     /**
@@ -68,7 +58,6 @@ class DatabaseClass {
      * @return int
      *
      */
-    
     public function num_rows($query) {
         $querys = $this->connect->query($query);
 
@@ -83,15 +72,14 @@ class DatabaseClass {
      * @return int
      *
      */
-    
     public function num_field($query) {
         $querys = $this->connect->query($query);
 
         return mysqli_num_fields($querys);
         mysqli_free_result($querys);
     }
-    
-    public function list_fields($query){
+
+    public function list_fields($query) {
         $querys = $this->connect->query($query);
         return mysqli_fetch_fields($querys);
         mysqli_free_result($querys);
@@ -105,7 +93,6 @@ class DatabaseClass {
      * @return string, array
      *
      */
-    
     public function filter($variable = null) {
         if (is_array($variable)) {
             foreach ($variable as $row) {
@@ -129,15 +116,48 @@ class DatabaseClass {
         
     }
 
-    public function update() {
-        
-    }
+    /**
+     * Update user data
+     *
+     * @access public
+     * @param string, array
+     * @return string, array
+     * @return limit
+     * @return where
+     *
+     */
     
+    public function update($table, $var = array(), $where = array(), $limit = '') {
+        $query = "UPDATE " . $table . " SET ";
+        foreach ($var as $row => $value) {
+            $update[] = "$row = '$value'";
+        }
+        $query .= implode(', ', $update);
+
+        foreach ($where as $row => $value) {
+
+            $wheres[] = "$row = '$value'";
+        }
+
+        $query .= ' WHERE ' . implode(' AND ', $wheres);
+
+        if (!empty($limit)) {
+            $query .= ' LIMIT ' . $limit;
+        }
+        $this->connect->query($query);
+
+        if (mysqli_error($this->connect)) {
+            printf(mysqli_error($this->connect));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Disconnect from database
      * Calling from __destruct
      */
-    
     public function disconnect() {
         mysqli_close($this->connect);
     }
