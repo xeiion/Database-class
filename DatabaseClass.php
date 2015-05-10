@@ -38,10 +38,9 @@ class DatabaseClass {
      * @return array
      *
      */
-    public function get_result($query) {
+    public function get_result($query, $Array = array()) {
         $dbinfo = $this->connect->query($query);
-        $Array = array();
-
+       
         while ($row = mysqli_fetch_array($dbinfo)) {
             $Array[] = $row;
         }
