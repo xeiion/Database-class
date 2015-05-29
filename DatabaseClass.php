@@ -5,7 +5,7 @@
  * * Class:       mysqli class
  * * Description:	PHP MySQLi query operator
  * * Version:		1.0
- * * Updated:     18-Feb-2013
+ * * Updated:     18-Feb-2015
  * * Author:	Jack petersen
  * * Homepage:	jack-petersen.com
  * *------------------------------------------------------------------------------ */
